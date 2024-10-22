@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登入 / 註冊</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .container {
+            background-color: white;
+            padding: 3rem;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            width: 400px;
+        }
+        input {
+            display: block;
+            width: 100%;
+            margin-bottom: 1rem;
+            padding: 0.5rem;
+        }
+        button {
+            width: 100%;
+            padding: 0.5rem;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            margin-bottom: 1rem;
+        }
+        .toggle-form {
+            text-align: center;
+            cursor: pointer;
+            color: #007bff;
+        }
+        .form-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+        .form-buttons button {
+            width: 48%;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="login-form">
+            <h2>登入 / 註冊</h2>
+            <input type="text" id="login-email" placeholder="電子郵件">
+            <input type="password" id="login-password" placeholder="密碼">
+            <div class="form-buttons">
+                <button onclick="login()">登入</button>
+                <button onclick="toggleForm()">註冊</button>
+            </div>
+        </div>
+        <div id="register-form" style="display: none;">
+            <h2>註冊</h2>
+            <input type="text" id="register-name" placeholder="姓名">
+            <input type="text" id="register-email" placeholder="電子郵件">
+            <input type="password" id="register-password" placeholder="密碼">
+            <input type="password" id="register-password-confirmation" placeholder="確認密碼">
+            <div class="form-buttons">
+                <button onclick="register()">確認註冊</button>
+                <button onclick="toggleForm()">返回登入</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleForm() {
+            const loginForm = document.getElementById('login-form');
+            const registerForm = document.getElementById('register-form');
+            loginForm.style.display = loginForm.style.display === 'none' ? 'block' : 'none';
+            registerForm.style.display = registerForm.style.display === 'none' ? 'block' : 'none';
+        }
+
+        async function login() {
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+
+            try {
+                const response = await fetch('http://127.0.0.1:8000/api/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email, password }),
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    localStorage.setItem('token', data.token);
+                    window.location.href = 'message_board.html';
+                } else {
+                    alert('登入失敗，請檢查您的電子郵件和密碼');
+                }
+            } catch (error) {
+                console.error('登入時發生錯誤:', error);
+                alert('登入時發生錯誤，請稍後再試');
+            }
+        }
+
+        async function register() {
+            const name = document.getElementById('register-name').value;
+            const email = document.getElementById('register-email').value;
+            const password = document.getElementById('register-password').value;
+            const password_confirmation = document.getElementById('register-password-confirmation').value;
+
+            try {
+                const response = await fetch('http://127.0.0.1:8000/api/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ name, email, password, password_confirmation }),
+                });
+
+                if (response.ok) {
+                    alert('註冊成功！請登入');
+                    toggleForm();
+                } else {
+                    const errorData = await response.json();
+                    alert('註冊失敗：' + JSON.stringify(errorData));
+                }
+            } catch (error) {
+                console.error('註冊時發生錯誤:', error);
+                alert('註冊時發生錯誤，請稍後再試');
+            }
+        }
+    </script>
+</body>
+</html>
