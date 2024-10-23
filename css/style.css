@@ -1,0 +1,46 @@
+body {
+    font-family: Arial, sans-serif;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 1rem;
+}
+
+.message {
+    background-color: #f0f0f0;
+    padding: 1rem;
+    margin-top: 1rem;
+    border-radius: 5px;
+}
+
+.message button {
+    float: right;
+}
+
+#new-message {
+    width: 100%;
+    height: 100px;
+    margin-bottom: 1rem;
+}
+
+#submit-message {
+    padding: 0.5rem 1rem;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+#logout-button {
+    padding: 0.5rem 1rem;
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    margin-left: 1rem;
+}
+
+#logout-button:hover {
+    background-color: #c82333;
+}
