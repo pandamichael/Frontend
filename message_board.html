@@ -13,10 +13,12 @@
             padding: 1rem;
         }
         .message {
-            background-color: #f0f0f0;
+            background-color: #ffffff; /* 背景色 */
             padding: 1rem;
             margin-top: 1rem;
-            border-radius: 5px;
+            border-radius: 5px; /* 圓角 */
+            border: 1px solid #e0e0e0; /* 邊框 */
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05); /* 輕微的陰影 */
         }
         .message button {
             float: right;
@@ -177,6 +179,14 @@
 
         async function addMessage() {
             const content = document.getElementById('new-message').value;
+            const maxMessageLength = 100; // 設定最大字數限制
+        
+            // 檢查字數是否超過限制
+            if (content.length > maxMessageLength) {
+                alert(`留言不能超過 ${maxMessageLength} 字`);
+                return;
+            }
+        
             try {
                 const response = await fetch('http://127.0.0.1:8000/api/messages', {
                     method: 'POST',
@@ -188,8 +198,8 @@
                     body: JSON.stringify({ content })
                 });
                 if (response.ok) {
-                    document.getElementById('new-message').value = '';
-                    fetchMessages();
+                    document.getElementById('new-message').value = ''; // 清空留言欄位
+                    fetchMessages(); // 刷新留言列表
                 } else {
                     console.error('新增留言失敗');
                 }
@@ -197,8 +207,10 @@
                 console.error('新增留言時發生錯誤:', error);
             }
         }
+        
 
         async function deleteMessage(messageId) {
+            if (!confirm("確定要刪除此留言嗎？")) return;
             try {
                 const response = await fetch(`http://127.0.0.1:8000/api/messages/${messageId}`, {
                     method: 'DELETE',
